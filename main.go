@@ -37,24 +37,23 @@ func main() {
 
 	godotenv.Load()
 
-	apiKey := os.Getenv("APOLLO_KEY")
-	graphRef := os.Getenv("APOLLO_GRAPH_REF")
-	graphRefParts := strings.Split(graphRef, "@")
-
-	log.Debug("Uplink ref is: ", graphRef)
-
-	if len(graphRefParts) != 2 {
-		log.Errorf("Could not decode graph ref: %s", graphRef)
-		//http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
 	localSchema := ""
 	dryRun := false
 
 	flag.StringVar(&localSchema, "schema", "", "Load local schema instead of remote.")
 	flag.BoolVar(&dryRun, "dry", false, "Dry run route creation.")
 	flag.Parse()
+
+	apiKey := os.Getenv("APOLLO_KEY")
+	graphRef := os.Getenv("APOLLO_GRAPH_REF")
+	graphRefParts := strings.Split(graphRef, "@")
+
+	log.Debug("Uplink ref is: ", graphRef)
+
+	if localSchema == "" && len(graphRefParts) != 2 {
+		log.Errorf("Could not decode graph ref: %s", graphRef)
+		return
+	}
 
 	schemaSDL := ""
 
